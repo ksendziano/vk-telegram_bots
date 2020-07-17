@@ -20,7 +20,7 @@ def main():
 # type_of_messenger - тип мессенджера.
 def get_answer_from_server(new_str, id, type_of_messenger):
     # Если новый пользователь написал /(s)Start, то сохраняем его id из мессенджера в качестве нового пользователя,
-    # Иначе происходит подключение к БД с базой вопросов и ответов, и в случае совпадения возвращается ответ из БД.
+    # Иначе подключаемся к БД с базой вопросов и ответов и возвращаем ответ из БД в случае совпадения.
     if new_str == constants.START_COMMAND:
         # data_base.save_user_id() возвращает либо True, либо False в зависимости от наличия id в БД
         if data_base.save_user_id(id, type_of_messenger):
@@ -117,35 +117,38 @@ def change_platform(new_str, id, type_of_messenger):
                     ready_to_change='false'))
                 return constants.STR_RIGHT_CHANNEL
 
-            # если были в вк и уходим в телегу при наличии id teleg
-            elif (type_of_messenger == constants.VK_MESSENGER['messenger_name'] and
-                  new_str == constants.TELEGRAM_MESSENGER['messenger_choice'] and row[0] != None):
-                engine.execute(users_table.update().where(users_table.c.id_vk == id).values(
-                    ready_to_change='false'))
-                bot_teleg.Bot.send_new_mes(bot_teleg.Bot, row[0])
-                return constants.STR_CHANGED_FROM_VK_TO_TELEG
-
-            # если были в вк и уходим в телегу при отсутствии id teleg
+            # если были в вк и уходим в телегу
             elif type_of_messenger == constants.VK_MESSENGER['messenger_name'] and \
-                    new_str == constants.TELEGRAM_MESSENGER['messenger_choice'] and row[0] == None:
-                engine.execute(users_table.update().where(users_table.c.id_vk == id).values(
-                    id_last_message=32))
-                return constants.STR_INPUT_ID_TELEG
+                    new_str == constants.TELEGRAM_MESSENGER['messenger_choice']:
+                # при наличии id teleg
+                if row[0] is not None:
+                    # изменяем состояние пользователя
+                    engine.execute(
+                        users_table.update().where(users_table.c.id_vk == id).values(ready_to_change='false'))
+                    # отправляем сообщение в выбранной платформе
+                    bot_teleg.Bot.send_new_mes(bot_teleg.Bot, row[0])
+                    return constants.STR_CHANGED_FROM_VK_TO_TELEG
+                else:
+                    # при отсутствии id teleg запрашиваем ввод id
+                    engine.execute(users_table.update().where(users_table.c.id_vk == id).values(id_last_message=32))
+                    return constants.STR_INPUT_ID_TELEG
 
-            # если были в телеге и уходим в вк при наличии id vk
+            # если были в телеге и уходим в вк
             elif type_of_messenger == constants.TELEGRAM_MESSENGER['messenger_name'] and \
-                    new_str == constants.VK_MESSENGER['messenger_choice'] and row[1] != None:
-                engine.execute(users_table.update().where(users_table.c.id_teleg == id).values(
-                    ready_to_change='false'))
-                bot_vk.Bot.send_new_mes(bot_vk.Bot, row[1])
-                return constants.STR_CHANGE_FROM_TELEG_TO_VK
-
-            # если были в телеге и уходим в вк при отсутствии id vk
-            elif (type_of_messenger == constants.TELEGRAM_MESSENGER['messenger_name'] and
-                  new_str == constants.VK_MESSENGER['messenger_choice'] and row[1] == None):
-                engine.execute(users_table.update().where(users_table.c.id_teleg == id).values(
-                    id_last_message=31))
-                return constants.STR_INPUT_ID_VK
+                    new_str == constants.VK_MESSENGER['messenger_choice']:
+                # при наличии id vk
+                if row[1] is not None:
+                    # изменяем состояние пользователя
+                    engine.execute(users_table.update().where(users_table.c.id_teleg == id).values(
+                        ready_to_change='false'))
+                    # отправляем сообщение в выбранной платформе
+                    bot_vk.Bot.send_new_mes(bot_vk.Bot, row[1])
+                    return constants.STR_CHANGE_FROM_TELEG_TO_VK
+                else:
+                    # при отсутствии id vk запрашиваем ввод id
+                    engine.execute(users_table.update().where(users_table.c.id_teleg == id).values(
+                        id_last_message=31))
+                    return constants.STR_INPUT_ID_VK
 
 
 def cast_to_int(new_str):  # Метод необходим для проверки корректности введеного id при смене платформы

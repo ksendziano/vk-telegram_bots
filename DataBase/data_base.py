@@ -45,6 +45,7 @@ def init_db():
 def save_user_id(user_id, type_of_messenger):
     engine = get_connection()
     users_table = get_users_table()
+    # Берём все id из БД
     rows = engine.execute(select([users_table.columns.id_teleg, users_table.columns.id_vk]))
 
     i = 0  # индекс для перебора строк
