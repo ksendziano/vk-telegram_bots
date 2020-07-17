@@ -19,16 +19,8 @@ class Bot(object):
         # Создание бота через токен
         @self.bot.message_handler(content_types=['text'])
         def send_message(message):
-
-            # Если get_answer_from_server() что-то вернул из БД, то ответ
             answer = server.get_answer_from_server(message.text.lower(), message.from_user.id, 'teleg')
-
-            if answer:
-                self.bot.send_message(message.from_user.id, answer, reply_markup=markup)
-            else:  # иначе...
-                self.bot.send_message(message.from_user.id,
-                                      "Я тебя не понимаю, не могу ответить на твой вопрос. Напиши /help.",
-                                      reply_markup=markup)
+            self.bot.send_message(message.from_user.id, answer, reply_markup=markup)
 
         self.bot.polling()
 

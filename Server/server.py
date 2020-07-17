@@ -58,6 +58,7 @@ def check_in_db_ready_to_change(new_str, id, type_of_messenger):
     for row in rows:
         if row[0] == 'true':
             return change_platform(new_str, id, type_of_messenger)
+    return constants.STR_NO_ANSWER
 
 
 def send_message_in_new_platform(new_str, id, type_of_messenger):
@@ -70,7 +71,7 @@ def send_message_in_new_platform(new_str, id, type_of_messenger):
         rows = engine.execute(
             select([users_table.c.id_last_message, users_table.c.ready_to_change]).where(users_table.c.id_vk == id))
         for row in rows:
-            if row[1] == 'true' and row[0] == 32:
+            if row[1] == 'true' and row[0] == constants.SYSTEM_CONSTANT_CHANGING_TO_TELEGRAM:
                 engine.execute(users_table.update().where(users_table.c.id_vk == id).values(
                     id_teleg=new_id, ready_to_change='false'))
                 bot_teleg.Bot.send_new_mes(bot_teleg.Bot, new_id)
@@ -83,12 +84,12 @@ def send_message_in_new_platform(new_str, id, type_of_messenger):
         rows = engine.execute(
             select([users_table.c.id_last_message, users_table.c.ready_to_change]).where(users_table.c.id_teleg == id))
         for row in rows:
-            if row[1] == 'true' and row[0] == 31:
+            if row[1] == 'true' and row[0] == constants.SYSTEM_CONSTANT_CHANGING_TO_VK:
                 engine.execute(users_table.update().where(users_table.c.id_teleg == id).values(
                     id_vk=new_id, ready_to_change='false'))
                 bot_vk.Bot.send_new_mes(bot_vk.Bot, new_id)
                 return constants.STR_ID_WAS_SAVED
-
+    return constants.STR_NO_ANSWER
 
 def get_answer_from_data_base(new_str, id):
     engine = data_base.get_connection()
@@ -104,6 +105,7 @@ def get_answer_from_data_base(new_str, id):
                 data_base.save_quest_id(id, id_quest)
                 return row[2]
             i += 1
+    return constants.STR_NO_ANSWER
 
 
 # Метод проверяет возможность для смены канала: если имеется нужный id - отправляет сообщение и меняет канал,

@@ -19,21 +19,13 @@ class Bot(object):
         for event in self.longpoll.listen():
             if event.type == VkEventType.MESSAGE_NEW:
                 if event.to_me:
-
                     message = event.text.lower()  # сохраняем полученное сообщение
                     id = event.user_id  # сохраняем id
 
                     # отправляем сообщение, id, тип платформы серверу на обработку
                     answer = server.get_answer_from_server(message, id, 'vk')
-
-                    # Если get_answer_from_server() что-то вернул из БД, то
-                    if answer:
-                        self.vk_session.method('messages.send', {'user_id': id, 'message': answer, 'random_id': 0,
-                                                                 'keyboard': keyboard.get_keyboard()})
-                    else:
-                        answer = 'Я тебя не понимаю, не могу ответить на твой вопрос. Напиши /help.'
-                        self.vk_session.method('messages.send', {'user_id': id, 'message': answer, 'random_id': 0,
-                                                                 'keyboard': keyboard.get_keyboard()})
+                    self.vk_session.method('messages.send', {'user_id': id, 'message': answer, 'random_id': 0,
+                                                             'keyboard': keyboard.get_keyboard()})
 
     # Метод для вызова отправки сообщения ботом в VK из других платформ
     def send_new_mes(self, user_id):
