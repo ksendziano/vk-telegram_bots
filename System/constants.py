@@ -20,6 +20,8 @@ STR_CHANGE_FROM_TELEG_TO_VK = 'Платформа изменена с телег
 STR_INPUT_ID_VK = 'Введите ваш id в VK'
 STR_ID_WAS_SAVED = 'ID успешно сохранен'
 STR_NO_ANSWER = 'Я тебя не понимаю, не могу ответить на твой вопрос. Напиши /help.'
+STR_HELLO_IN_CHOSEN_CHANEL = 'Приветствую в выбранном канале коммуникации!'
+STR_ERROR_SEND_MESSAGE_TO_ID = 'Произошла ошибка. Не получилось отправить сообщение. Проверьте ID'
 
 QUEST_ID_TO_START_CHANGE_PLATFORM = 3
 SYSTEM_CONSTANT_CHANGING_TO_VK = 31

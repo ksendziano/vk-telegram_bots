@@ -55,7 +55,7 @@ def save_user_id(user_id, type_of_messenger):
         for row in rows:
             if row[1] != user_id:
                 i += 1
-            # Если совпадений не нашлось, то пользователь новый: возвращаем True и записываем id в БД
+            # Если совпадений не нашлось (rowcount == i) , то пользователь новый: возвращаем True и записываем id в БД
             if rowcount - i == 0:
                 engine.execute(users_table.insert().values(id_vk=user_id, ready_to_change='false'))
                 return True
@@ -65,6 +65,7 @@ def save_user_id(user_id, type_of_messenger):
         for row in rows:
             if row[0] != user_id:
                 i += 1
+            # Если совпадений не нашлось (rowcount == i) , то пользователь новый: возвращаем True и записываем id в БД
             if rowcount - i == 0:
                 engine.execute(users_table.insert().values(id_teleg=user_id, ready_to_change='false'))
                 return True

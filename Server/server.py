@@ -15,7 +15,7 @@ def main():
     t2.join()
 
 
-# Метод get_answer_from_server возвращает ответ на вопрос, если было найдено сходство с БД.
+# Метод get_answer_from_server возвращает ответ на вопрос
 # Params передаются в классах ботов: new_str - новое сообщение от пользователя, id - id пользователя,
 # type_of_messenger - тип мессенджера.
 def get_answer_from_server(new_str, id, type_of_messenger):
@@ -85,11 +85,12 @@ def send_message_in_new_platform(new_str, id, type_of_messenger):
             select([users_table.c.id_last_message, users_table.c.ready_to_change]).where(users_table.c.id_teleg == id))
         for row in rows:
             if row[1] == 'true' and row[0] == constants.SYSTEM_CONSTANT_CHANGING_TO_VK:
+                bot_vk.Bot.send_new_mes(bot_vk.Bot, new_id)
                 engine.execute(users_table.update().where(users_table.c.id_teleg == id).values(
                     id_vk=new_id, ready_to_change='false'))
-                bot_vk.Bot.send_new_mes(bot_vk.Bot, new_id)
                 return constants.STR_ID_WAS_SAVED
     return constants.STR_NO_ANSWER
+
 
 def get_answer_from_data_base(new_str, id):
     engine = data_base.get_connection()
@@ -141,7 +142,8 @@ def change_platform(new_str, id, type_of_messenger):
                 return constants.STR_CHANGED_FROM_VK_TO_TELEG
             else:
                 # при отсутствии id teleg запрашиваем ввод id
-                engine.execute(users_table.update().where(users_table.c.id_vk == id).values(id_last_message=32))
+                engine.execute(users_table.update().where(users_table.c.id_vk == id).values(
+                    id_last_message=constants.SYSTEM_CONSTANT_CHANGING_TO_TELEGRAM))
                 return constants.STR_INPUT_ID_TELEG
 
         # если были в телеге и уходим в вк
@@ -158,7 +160,7 @@ def change_platform(new_str, id, type_of_messenger):
             else:
                 # при отсутствии id vk запрашиваем ввод id
                 engine.execute(users_table.update().where(users_table.c.id_teleg == id).values(
-                    id_last_message=31))
+                    id_last_message=constants.SYSTEM_CONSTANT_CHANGING_TO_VK))
                 return constants.STR_INPUT_ID_VK
 
 

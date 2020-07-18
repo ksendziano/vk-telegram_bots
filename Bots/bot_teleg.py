@@ -1,7 +1,7 @@
 import telebot
 from Server import server
 from telebot import types
-from System.constants import TELEGRAM_BOT_TOKEN
+from System.constants import TELEGRAM_BOT_TOKEN, STR_HELLO_IN_CHOSEN_CHANEL
 
 markup = types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=False)
 change_channel_btn = types.KeyboardButton('Сменить канал коммуникации')
@@ -13,7 +13,7 @@ class Bot(object):
 
     # Метод для вызова отправки сообщения ботом в VK из других платформ
     def send_new_mes(self, user_id):
-        self.bot.send_message(user_id, 'Приветствую в выбранном канале коммуникации!', reply_markup=markup)
+        self.bot.send_message(user_id, STR_HELLO_IN_CHOSEN_CHANEL, reply_markup=markup)
 
     def __init__(self):
         # Создание бота через токен
