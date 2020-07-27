@@ -1,8 +1,8 @@
 import vk_api
-from Server import server
+import server
 from vk_api.longpoll import VkLongPoll, VkEventType
 from vk_api.keyboard import VkKeyboard, VkKeyboardColor
-from System.constants import VK_BOT_TOKEN, STR_HELLO_IN_CHOSEN_CHANEL, STR_ERROR_SEND_MESSAGE_TO_ID
+from system.constants import VK_BOT_TOKEN, STR_HELLO_IN_CHOSEN_CHANEL, STR_ERROR_SEND_MESSAGE_TO_ID, VK_MESSENGER
 
 keyboard = VkKeyboard(one_time=False)
 keyboard.add_button('Сменить канал коммуникации', color=VkKeyboardColor.PRIMARY)
@@ -19,11 +19,11 @@ class Bot(object):
         for event in self.longpoll.listen():
             if event.type == VkEventType.MESSAGE_NEW:
                 if event.to_me:
-                    message = event.text.lower()  # сохраняем полученное сообщение
+                    new_message_from_user = event.text.lower()  # сохраняем полученное сообщение
                     id = event.user_id  # сохраняем id
 
                     # отправляем сообщение, id, тип платформы серверу на обработку
-                    answer = server.get_answer_from_server(message, id, 'vk')
+                    answer = server.get_answer_from_server(new_message_from_user, id, VK_MESSENGER['messenger_name'])
                     self.vk_session.method('messages.send', {'user_id': id, 'message': answer, 'random_id': 0,
                                                              'keyboard': keyboard.get_keyboard()})
 

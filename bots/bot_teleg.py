@@ -1,7 +1,7 @@
 import telebot
-from Server import server
+import server
 from telebot import types
-from System.constants import TELEGRAM_BOT_TOKEN, STR_HELLO_IN_CHOSEN_CHANEL
+from system.constants import TELEGRAM_BOT_TOKEN, STR_HELLO_IN_CHOSEN_CHANEL, TELEGRAM_MESSENGER
 
 markup = types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=False)
 change_channel_btn = types.KeyboardButton('Сменить канал коммуникации')
@@ -19,7 +19,8 @@ class Bot(object):
         # Создание бота через токен
         @self.bot.message_handler(content_types=['text'])
         def send_message(message):
-            answer = server.get_answer_from_server(message.text.lower(), message.from_user.id, 'teleg')
+            answer = server.get_answer_from_server(message.text.lower(), message.from_user.id,
+                                                   TELEGRAM_MESSENGER['messenger_name'])
             self.bot.send_message(message.from_user.id, answer, reply_markup=markup)
 
         self.bot.polling()
