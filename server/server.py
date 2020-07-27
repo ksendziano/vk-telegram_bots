@@ -3,8 +3,8 @@ from bots import bot_teleg, bot_vk
 from repository import data_base
 from system import constants
 from sqlalchemy import or_
-from repository.entities.quest_model import Quest
-from repository.entities.user_model import User
+from entities.quest_model import Quest
+from entities.user_model import User
 
 
 # При старте сервера создаются потоки с экземплярами ботов
