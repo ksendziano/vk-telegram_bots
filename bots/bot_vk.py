@@ -17,13 +17,14 @@ class Bot(object):
     def __init__(self):
         # Если пришло новое сообщение боту
         for event in self.longpoll.listen():
+            #А если объединить ifы???
             if event.type == VkEventType.MESSAGE_NEW:
                 if event.to_me:
                     new_message_from_user = event.text.lower()  # сохраняем полученное сообщение
-                    id = event.user_id  # сохраняем id
+                    id = event.user_id  # сохраняем id # id является builtin, переименую и почитай почему так не хорошо.
 
                     # отправляем сообщение, id, тип платформы серверу на обработку
-                    answer = server.get_answer_from_server(new_message_from_user, id, VK_MESSENGER['messenger_name'])
+                    answer = server.get_answer_from_server(new_message_from_user, id, VK_MESSENGER['messenger_name']) # Тут точно все ок??
                     self.vk_session.method('messages.send', {'user_id': id, 'message': answer, 'random_id': 0,
                                                              'keyboard': keyboard.get_keyboard()})
 
