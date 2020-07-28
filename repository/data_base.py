@@ -12,7 +12,7 @@ def get_connection():
 
 
 def get_sqlachemy_session():
-    Session = sessionmaker(bind=get_connection())
+    Session = sessionmaker(bind=get_connection()) # naming convention, Саня
     session = Session()
     return session
 
