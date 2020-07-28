@@ -59,7 +59,7 @@ def check_in_db_ready_to_change(new_str, id, type_of_messenger):
 
 # Метод проверяет возможность для смены канала: если имеется нужный id - отправляет сообщение и меняет канал,
 # если нет id, то просит его ввести.
-def change_platform(new_str, id, type_of_messenger):
+def change_platform(new_str, id, type_of_messenger):# подумай, может можно как-то метод облегчить, например разбить на несколько.
     session = data_base.get_sqlachemy_session()
     for row in session.query(User).filter(or_(User.id_vk == id, User.id_teleg == id)):
         # защита от дурака: пользователь был в том же мессенджере, который выбрал
@@ -158,7 +158,7 @@ def cast_to_int(new_str):  # Метод необходим для проверк
 
 
 # Сохранение id нового пользователя: возвращает True, если пользователь новый
-def save_user_id(user_id, type_of_messenger):
+def save_user_id(user_id, type_of_messenger): #2 раза делаешь одно и тоже для разных мессенджеров, подумай, может можно избавиться от этого 
     session = data_base.get_sqlachemy_session()
     rows = session.query(User.id_teleg, User.id_vk)
     i = 0  # индекс для перебора строк
