@@ -9,7 +9,7 @@ markup.add(change_channel_btn)
 
 
 class Bot(object):
-    bot = telebot.TeleBot(TELEGRAM_BOT_TOKEN)
+    bot = telebot.TeleBot(TELEGRAM_BOT_TOKEN)# Переименуй класс или поле, не стоит называть одинаково, хоть и с маленькой буквы
 
     # Метод для вызова отправки сообщения ботом в VK из других платформ
     def send_new_mes(self, user_id):
